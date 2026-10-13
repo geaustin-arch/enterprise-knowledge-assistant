@@ -39,6 +39,10 @@ def chunk_document(document_id: str, title: str, text: str, size: int = 80, over
 class BM25Index:
     """In-memory BM25 implementation so the demo stays provider-independent."""
     def __init__(self, chunks: list[Chunk], k1: float = 1.5, b: float = 0.75):
+        if not math.isfinite(k1) or k1 <= 0:
+            raise ValueError("k1 must be a finite positive number")
+        if not math.isfinite(b) or not 0 <= b <= 1:
+            raise ValueError("b must be between 0 and 1")
         self.chunks, self.k1, self.b = chunks, k1, b
         self.terms = [Counter(tokenize(c.text)) for c in chunks]
         self.lengths = [sum(tf.values()) for tf in self.terms]
@@ -46,6 +50,8 @@ class BM25Index:
         self.df = Counter(term for tf in self.terms for term in tf)
 
     def search(self, query: str, k: int = 4) -> list[Hit]:
+        if k < 1:
+            raise ValueError("k must be at least 1")
         qterms = set(tokenize(query))
         n = len(self.chunks)
         hits = []
