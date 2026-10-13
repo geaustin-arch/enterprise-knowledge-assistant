@@ -14,7 +14,7 @@ class VertexGeminiAnswerer:
         os.environ.setdefault("GOOGLE_CLOUD_LOCATION", "global")
         os.environ.setdefault("GOOGLE_GENAI_USE_ENTERPRISE", "true")
         self.client = genai.Client(http_options=HttpOptions(api_version="v1"))
-        self.model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+        self.model = os.getenv("GEMINI_MODEL", "gemini-3.5-flash")
 
     def answer(self, question: str, hits: list[Hit]) -> str:
         evidence = "\n\n".join(f"[{h.chunk.chunk_id}] {h.chunk.title}: {h.chunk.text}" for h in hits)
